@@ -34,6 +34,7 @@ If you disable SSH then the command will run locally under the user used to laun
   "Enabled": true,
   "Host": "192.168.0.1",
   "Port": 22,
+  "Username": "root",
   "KeyFile": "/root/.ssh/id_rsa",
   "KeyPassword": null // or "qwerty"
 }
