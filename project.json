@@ -1,0 +1,51 @@
+{
+  "name": "ghd",
+  "title": "ghd",
+  "version": "1.0.0-*",
+  "description": "GitHub Deploy",
+  "copyright": "Joe Biellik 2016",
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true
+  },
+  "publishOptions": {
+    "include": [
+      "settings.json"
+    ]
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Routing": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+    "Microsoft.NETCore.App": "1.1.0",
+    "Serilog": "2.3.0",
+    "Serilog.Extensions.Logging": "1.3.1",
+    "Serilog.Sinks.Literate": "2.0.0",
+    "SSH.NET": "2016.0.0"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  },
+  "runtimes": {
+    "win7-x64": {},
+    "win7-x86": {},
+    "win8-x64": {},
+    "win8-x86": {},
+    "win81-x64": {},
+    "win81-x86": {},
+    "win10-x64": {},
+    "win10-x86": {},
+    "rhel.7.0-x64": {},
+    "rhel.7.1-x64": {},
+    "rhel.7.2-x64": {},
+    "centos.7-x64": {},
+    "debian.8-x64": {},
+    "fedora.23-x64": {}
+  }
+}
