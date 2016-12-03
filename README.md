@@ -5,6 +5,8 @@
 Simple cross platform service to run a command when triggered by a GitHub webhook. Built in C# using [.NET Native](https://msdn.microsoft.com/en-us/library/dn584397\(v=vs.110\).aspx) to support Windows, Linux and OSX.
 
 ## Configuration
+The service binds to `localhost:5000` by default, to bind to a different address use the `--server.urls` flag, e.g. `ghd --server.urls=http://0.0.0.0:80`.
+
 All configuration options are stored in `settings.json`.
 
 ### SSH
@@ -47,9 +49,10 @@ The GitHub configuration is simply the repository and branch to accept webhooks 
 "GitHub": {
   "Repository": "githubtraining/hellogitworld",
   "Branch": "master"
+}
 ```
 
-## GitHub
+## Deploy
 The deploy section specifies the command to run either locally or over SSH.
 Both the `Command` and `Arguments` strings are interpolated with the [data from the GitHub webhook](https://developer.github.com/v3/activity/events/types/#pushevent), exposing the [full objects](Webhooks/GitHub.cs).
 
@@ -68,3 +71,7 @@ Both the `Command` and `Arguments` strings are interpolated with the [data from 
   "Arguments": "/C echo Deploying {Repository.FullName} [{HeadCommit.Timestamp}]: {HeadCommit.Message}"
 }
 ```
+
+## Building
+If you have [.NET Core](https://www.microsoft.com/net/core) installed then just run `dotnet run -c Release` to start the service directly.
+To build a portable native binary run `dotnet publish -c Release -r centos.7-x64` replacing the runtime flag with your target platform. The app will be built in `bin/Release/netcoreapp1.0/<runtime>/publish`. See [package.json](package.json) for supported runtimes.
