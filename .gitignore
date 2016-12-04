@@ -1,5 +1,6 @@
 project.lock.json
 *.xproj.user
 .vs/
+.nuget/
 bin/
 obj/

@@ -75,6 +75,7 @@ Both the `Command` and `Arguments` strings are interpolated with the [data from 
 ## Building
 If you have [.NET Core](https://www.microsoft.com/net/core) installed then just run `dotnet run -c Release` to start the service directly.
 To build a portable native binary run `dotnet publish -c Release -r centos.7-x64` replacing the runtime flag with your target platform. The app will be built in `bin/Release/netcoreapp1.0/<runtime>/publish`. See [project.json](project.json) for supported runtimes.
+Alternatively you can run and build the service under [Docker](https://www.docker.com/) with the provided [Compose file](docker-compose.yml).
 
 ## Setup
 Once the service is running, add a new webhook to your GitHub repository:
