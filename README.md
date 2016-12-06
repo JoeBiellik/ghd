@@ -11,7 +11,7 @@ All configuration options are stored in `settings.json`.
 
 ### SSH
 #### Disabled example
-If you disable SSH then the command will run locally under the user used to launch the service.
+If you disable SSH then the deploy command will run locally under the user used to launch the service.
 
 ```json
 "SSH": {
