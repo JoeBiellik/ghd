@@ -1,6 +1,7 @@
 # GitHub Deploy
 [![License](https://img.shields.io/github/license/JoeBiellik/ghd.svg)](LICENSE.md)
 [![Release Version](https://img.shields.io/github/release/JoeBiellik/ghd.svg)](https://github.com/JoeBiellik/ghd/releases)
+[![Build Status](https://img.shields.io/travis/JoeBiellik/ghd.svg)](https://travis-ci.org/JoeBiellik/ghd)
 
 Simple cross platform service to run a command when triggered by a GitHub webhook. Built in C# using [.NET Native](https://msdn.microsoft.com/en-us/library/dn584397\(v=vs.110\).aspx) to support Windows, Linux and OSX.
 
