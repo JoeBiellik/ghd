@@ -9,6 +9,19 @@ script:
   - dotnet restore
   - dotnet build
 
+before_deploy:
+  - dotnet publish -c Release -r debian.8-x64 -o out
+  - tar -czvf ghd.tar.gz out/
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Mb95qB71wveTEaCThp1pIZPIkIISJflvJGIThM4D77zTdBSX7dnntSSY5ysDGGoW1yfMvHEC/4I19SkpAluCN3mXt6ETKHgsrSpZrC+vWsuWQfzrIUkMPNeHvXIpAMjiwvP0SfOu1wz3D25DrB4012TrUAm7IDy0cce3g0iQ8S7TSU9kHJGtvsW6oNKLWpwSzoH3qKV/SLFvOJfAulU21xU7A0TxNHaZcV97wigXn4EZl4sG9yROqqEygQi1nyLqIsgWmcVBfBL0nOICztlsqa/VQJuloiGC3moPChgZR+OD1N2xHGT9nsqj9+H5hUzFR8qLwNNhd/0t119JiK1XiwHPDlJhhC38NPHY/ukpdQ7gPbZfOYLS+lJmvKzKA426pvqqnL+mJyMT4Aq1I9PMhW6+WuDXnl+aI7Pmntf2I9DZEDq3MzwiJlF5cMvTDkk8pyPTvxXR8wypalEz8KvpPyIOaI2OeV3wjhyg3RnHEU9h3cna3WJre9NNYnIyfuegfl2xnW+En7Yphse7cGaft6rRsYvJeQS3mMbbNgXlzqyTLQu5toqWdvlAZlsXfnlMlXT6k5NPu6aTRL9msFeg+KRW03qZ8F4yryn+c11UFIS99/CdI21s2fA7Jvx2ZF38M3dUOyOpBMvbJ/9ruHwZ27iXp8sGLrwe20HSjXl9u8k=
+  file: ghd.tar.gz
+  on:
+    repo: JoeBiellik/ghd
+    tags: true
+
 cache:
   directories:
   - $HOME/.nuget
