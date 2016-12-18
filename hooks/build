@@ -1,3 +1,6 @@
 #!/usr/bin/env sh
 
+git status
+git describe --tags $(git rev-list --tags --max-count=1)
+
 docker build -t $IMAGE_NAME --build-arg GHD_VERSION=$SOURCE_BRANCH .
