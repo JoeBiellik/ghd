@@ -12,7 +12,7 @@ script:
 before_deploy: |
   for RUNTIME in win10-x64 centos.7-x64 debian.8-x64; do
     dotnet publish -c Release -r $RUNTIME -o ghd-$TRAVIS_TAG-$RUNTIME
-    tar -czvf ghd-$TRAVIS_TAG-$RUNTIME.tar.gz ghd-$TRAVIS_TAG-$RUNTIME/
+    tar -czf ghd-$TRAVIS_TAG-$RUNTIME.tar.gz ghd-$TRAVIS_TAG-$RUNTIME/
   done
 
 deploy:
@@ -25,6 +25,9 @@ deploy:
   on:
     repo: JoeBiellik/ghd
     tags: true
+
+after_deploy:
+  - curl -H "Content-Type: application/json" --data '{"source_type": "Tag", "source_name": "$TRAVIS_TAG"}' -X POST https://registry.hub.docker.com/u/joebiellik/ghd/trigger/$DOCKER_HUB_TOKEN/
 
 cache:
   directories:
