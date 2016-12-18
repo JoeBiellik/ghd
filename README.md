@@ -1,9 +1,15 @@
 # GitHub Deploy
 [![License](https://img.shields.io/github/license/JoeBiellik/ghd.svg)](LICENSE.md)
 [![Release Version](https://img.shields.io/github/release/JoeBiellik/ghd.svg)](https://github.com/JoeBiellik/ghd/releases)
+[![Dependency Status](https://img.shields.io/versioneye/d/user/projects/584b5112a662a5003f83c176.svg)](https://www.versioneye.com/user/projects/584b5112a662a5003f83c176)
 [![Build Status](https://img.shields.io/travis/JoeBiellik/ghd.svg)](https://travis-ci.org/JoeBiellik/ghd)
+[![Docker Build](https://img.shields.io/docker/automated/joebiellik/ghd.svg)](https://microbadger.com/images/joebiellik/ghd)
+[![Docker Pulls](https://img.shields.io/docker/pulls/joebiellik/ghd.svg)](https://hub.docker.com/r/joebiellik/ghd/)
 
 Simple cross platform service to run a command when triggered by a GitHub webhook. Built in C# using [.NET Native](https://msdn.microsoft.com/en-us/library/dn584397\(v=vs.110\).aspx) to support Windows, Linux and OSX.
+
+## Running
+You can [download a native binary of the latest release](https://github.com/JoeBiellik/ghd/releases/latest) or you can use the [Docker container](https://hub.docker.com/r/joebiellik/ghd/).
 
 ## Configuration
 The service binds to `localhost:5000` by default, to bind to a different address use the `--server.urls` flag, e.g. `ghd --server.urls=http://0.0.0.0:80`.
@@ -11,8 +17,8 @@ The service binds to `localhost:5000` by default, to bind to a different address
 All configuration options are stored in `settings.json`.
 
 ### SSH
-#### Disabled example
-If you disable SSH then the deploy command will run locally under the user used to launch the service.
+#### Disabled
+If you disable SSH then the deploy command will run locally under the user which launched the service.
 
 ```json
 "SSH": {
@@ -20,7 +26,7 @@ If you disable SSH then the deploy command will run locally under the user used 
 }
 ```
 
-#### Password example
+#### Password
 ```json
 "SSH": {
   "Enabled": true,
@@ -31,7 +37,7 @@ If you disable SSH then the deploy command will run locally under the user used 
 }
 ```
 
-#### Public key example
+#### Public Key
 ```json
 "SSH": {
   "Enabled": true,
@@ -73,11 +79,6 @@ Both the `Command` and `Arguments` strings are interpolated with the [data from 
 }
 ```
 
-## Building
-If you have [.NET Core](https://www.microsoft.com/net/core) installed then just run `dotnet run -c Release` to start the service directly.
-To build a portable native binary run `dotnet publish -c Release -r centos.7-x64` replacing the runtime flag with your target platform. The app will be built in `bin/Release/netcoreapp1.0/<runtime>/publish`. See [project.json](project.json) for supported runtimes.
-Alternatively you can run and build the service under [Docker](https://www.docker.com/) with the provided [Compose file](docker-compose.yml).
-
 ## Setup
 Once the service is running, add a new webhook to your GitHub repository:
 ```
@@ -86,3 +87,8 @@ Content type: application/json
 Secret: Ignored
 Event: Only the push event is currently used
 ```
+
+## Building
+If you have [.NET Core](https://www.microsoft.com/net/core) installed then just run `dotnet run -c Release` to start the service directly.
+To build a portable native binary run `dotnet publish -c Release -r centos.7-x64` replacing the runtime flag with your target platform. The app will be built in `bin/Release/netcoreapp1.0/<runtime>/publish`. See [project.json](project.json) for supported runtimes.
+Alternatively you can run and build the service under [Docker](https://www.docker.com/) with the provided [Compose file](docker-compose.yml).
