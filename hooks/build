@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+printenv
+
+docker build -t $IMAGE_NAME --build-arg GHD_VERSION=$SOURCE_BRANCH .
