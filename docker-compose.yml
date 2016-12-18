@@ -1,6 +1,14 @@
 version: '2'
 
 services:
+  production:
+    image: joebiellik/ghd:latest
+    restart: always
+    volumes:
+     - ./settings.json:/app/settings.json
+    ports:
+     - "localhost:5000:5000"
+
   debug:
     image: microsoft/dotnet:latest
     entrypoint: bash -c "dotnet restore && dotnet run"
