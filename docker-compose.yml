@@ -4,6 +4,8 @@ services:
   production:
     image: joebiellik/ghd:latest
     restart: always
+    environment:
+     - ASPNETCORE_URLS=http://0.0.0.0:5000
     volumes:
      - ./settings.json:/app/settings.json
     ports:
