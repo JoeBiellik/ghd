@@ -16,7 +16,18 @@
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleFolder Include=".git\" />
+    <DnxInvisibleFolder Include=".nuget\" />
     <DnxInvisibleFolder Include=".vs\" />
+    <DnxInvisibleFolder Include="hooks\" />
+  </ItemGroup>
+  <ItemGroup>
+    <DnxInvisibleContent Include=".dockerignore" />
+    <DnxInvisibleContent Include=".editorconfig" />
+    <DnxInvisibleContent Include=".travis.yml" />
+    <DnxInvisibleContent Include="docker-compose.yml" />
+    <DnxInvisibleContent Include="Dockerfile" />
+    <DnxInvisibleContent Include="LICENSE.md" />
+    <DnxInvisibleContent Include="README.md" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>
