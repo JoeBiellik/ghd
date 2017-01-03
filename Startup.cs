@@ -23,6 +23,8 @@ namespace ghd
 
         public Startup(IHostingEnvironment env)
         {
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.LiterateConsole()
                 .Enrich.FromLogContext()
@@ -64,15 +66,17 @@ namespace ghd
         {
             loggerFactory.AddSerilog();
 
-            if (settings.Value.Ssh.Enabled)
+            foreach (var profile in settings.Value.Profiles)
             {
-                var sshUseKey = !string.IsNullOrWhiteSpace(settings.Value.Ssh.KeyFile);
+                if (!profile.Ssh.Enabled) continue;
 
-                Log.Logger.Information("SSH is enabled, testing SSH connection to {SshUsername}@{SshHost}:{SshPort} using {SshAuth}", settings.Value.Ssh.Username, settings.Value.Ssh.Host, settings.Value.Ssh.Port, sshUseKey ? $"{settings.Value.Ssh.KeyFile} keyfile" : "password auth");
+                var sshUseKey = !string.IsNullOrWhiteSpace(profile.Ssh.KeyFile);
+
+                Log.Logger.Information("Testing SSH connection to {SshUsername}@{SshHost}:{SshPort} using {SshAuth}", profile.Ssh.Username, profile.Ssh.Host, profile.Ssh.Port, sshUseKey ? $"{profile.Ssh.KeyFile} keyfile" : "password auth");
 
                 try
                 {
-                    Ssh.Test(settings.Value.Ssh);
+                    Ssh.Test(profile.Ssh);
                     Log.Logger.Information("SSH connection test passed");
                 }
                 catch (Exception ex)
@@ -85,9 +89,13 @@ namespace ghd
 
             Log.Logger.Information("Server listening on {@ServerAddress}", app.ServerFeatures.Get<IServerAddressesFeature>()?.Addresses);
 
+            app.UseMvc(r => r.MapRoute("status", "{*anything}", new { controller = "Webhook", action = "Head" }));
             app.UseMvc(r => r.MapRoute("webhook", "{*anything}", new { controller = "Webhook", action = "Post" }));
 
-            Log.Logger.Information("{AppName} ready for incoming webhooks for repo {Repo} on branch {Branch}", APP_NAME, settings.Value.GitHub.Repository, settings.Value.GitHub.Branch);
+            foreach (var profile in settings.Value.Profiles)
+            {
+                Log.Logger.Information("{AppName} ready for incoming webhooks for repo {Repo} on branch {Branch}", APP_NAME, profile.GitHub.Repository, profile.GitHub.Branch);
+            }
         }
     }
 }

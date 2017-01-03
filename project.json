@@ -3,7 +3,7 @@
   "title": "ghd",
   "version": "1.0.0-*",
   "description": "GitHub Deploy",
-  "copyright": "Joe Biellik 2016",
+  "copyright": "Joe Biellik 2016-2017",
   "buildOptions": {
     "debugType": "portable",
     "emitEntryPoint": true

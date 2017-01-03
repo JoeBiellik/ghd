@@ -14,7 +14,7 @@ You can [download a native binary of the latest release](https://github.com/JoeB
 ## Configuration
 The service binds to `localhost:5000` by default, to bind to a different address use the `--server.urls` flag, e.g. `ghd --server.urls=http://0.0.0.0:80`.
 
-All configuration options are stored in `settings.json`.
+All configuration options are stored in `settings.json`. Multiple repositories and branches can be watched by creating multiple profiles.
 
 ### SSH
 #### Disabled

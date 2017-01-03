@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using ghd.Extentions;
 using ghd.Webhooks;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,12 @@ namespace ghd.Controllers
             };
         }
 
+        [HttpHead]
+        public StatusCodeResult Head()
+        {
+            return this.StatusCode(200);
+        }
+
         [HttpPost]
         public StatusCodeResult Post([FromBody] JObject value)
         {
@@ -45,50 +52,39 @@ namespace ghd.Controllers
 
                     this.Logger.LogInformation("[{Event}] {Repo}: [{Ref}] \"{CommitMessage}\"", eventName, push.Repository.FullName, push.Ref.StartsWith("refs/heads/") ? push.Ref.Substring(11) : push.Ref, push.HeadCommit.Message);
 
-                    if (push.Repository.FullName == this.Settings.GitHub.Repository && push.Ref == $"refs/heads/{this.Settings.GitHub.Branch}")
+                    var settings = this.Settings.Profiles.FirstOrDefault(p => p.GitHub.Repository == push.Repository.FullName && $"refs/heads/{p.GitHub.Branch}" == push.Ref);
+
+                    if (settings != null)
                     {
                         this.Logger.LogInformation("[{Event}] {Repo}: Triggering deployment...", eventName, push.Repository.FullName);
 
-                        string stdOut;
-                        string stdErr;
                         int exitCode;
 
-                        if (this.Settings.Ssh.Enabled)
+                        if (settings.Ssh.Enabled)
                         {
-                            var command = Ssh.Run(this.Settings.Ssh, $"{this.Settings.Deploy.Command.FormatWith(push)} {this.Settings.Deploy.Arguments.FormatWith(push)}");
+                            var command = Ssh.Run(settings.Ssh, $"{settings.Deploy.Command.FormatWith(push)} {settings.Deploy.Arguments.FormatWith(push)}", new Progress<SshOutputLine>(s => this.LogPlain(s.Line, s.IsError)));
 
-                            stdOut = command.Result;
-                            stdErr = command.Error;
                             exitCode = command.ExitStatus;
                         }
                         else
                         {
-                            var process = Process.Start(new ProcessStartInfo(this.Settings.Deploy.Command.FormatWith(push), this.Settings.Deploy.Arguments.FormatWith(push))
+                            var process = Process.Start(new ProcessStartInfo(settings.Deploy.Command.FormatWith(push), settings.Deploy.Arguments.FormatWith(push))
                             {
                                 CreateNoWindow = true,
                                 RedirectStandardOutput = true,
                                 RedirectStandardError = true
                             });
 
+                            process.OutputDataReceived += (sender, args) => this.LogPlain(args.Data);
+                            process.ErrorDataReceived += (sender, args) => this.LogPlain(args.Data, true);
+
+                            process.Start();
+                            process.BeginOutputReadLine();
+                            process.BeginErrorReadLine();
+
                             process.WaitForExit();
 
-                            stdOut = process.StandardOutput.ReadToEnd();
-                            stdErr = process.StandardError.ReadToEnd();
                             exitCode = process.ExitCode;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(stdOut))
-                        {
-                            this.Logger.LogInformation("[{Event}] {Repo}: Deployment sent no standard output", eventName, push.Repository.FullName);
-                        }
-                        else
-                        {
-                            this.Logger.LogInformation("[{Event}] {Repo}: Deployment standard output:\n" + stdOut.Trim(), eventName, push.Repository.FullName);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(stdErr))
-                        {
-                            this.Logger.LogWarning("[{Event}] {Repo}: Deployment standard error:\n" + stdErr.Trim(), eventName, push.Repository.FullName);
                         }
 
                         if (exitCode != 0)
@@ -102,14 +98,9 @@ namespace ghd.Controllers
                     }
                     else
                     {
-                        if (push.Repository.FullName != this.Settings.GitHub.Repository)
-                        {
-                            this.Logger.LogInformation("[{Event}] {Repo}: Skipping deployment, repo does not match {WatchRepo}", eventName, push.Repository.FullName, this.Settings.GitHub.Repository);
-                        }
-                        else
-                        {
-                            this.Logger.LogInformation("[{Event}] {Repo}: Skipping deployment, branch does not match {WatchBranch}", eventName, push.Repository.FullName, this.Settings.GitHub.Branch);
-                        }
+                        this.Logger.LogInformation(this.Settings.Profiles.All(p => p.GitHub.Repository != push.Repository.FullName)
+                            ? "[{Event}] {Repo}: Skipping deployment, repo does not match monitored"
+                            : "[{Event}] {Repo}: Skipping deployment, branch does not match monitored", eventName, push.Repository.FullName);
                     }
 
                     break;
@@ -119,6 +110,15 @@ namespace ghd.Controllers
             }
 
             return this.StatusCode(200);
+        }
+
+        protected void LogPlain(string data, bool error = false)
+        {
+            if (data == null) return;
+
+            Console.ForegroundColor = error ? ConsoleColor.DarkYellow : ConsoleColor.Gray;
+
+            Console.Write(data);
         }
     }
 }

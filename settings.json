@@ -1,19 +1,36 @@
 {
-  "SSH": {
-    "Enabled": false,
-    "Host": "localhost",
-    "Port": 22,
-    "Username": "root",
-    "Password": "",
-    "KeyFile": null,
-    "KeyPassword": null
-  },
-  "GitHub": {
-    "Repository": "githubtraining/hellogitworld",
-    "Branch": "master"
-  },
-  "Deploy": {
-    "Command": "bash",
-    "Arguments": "-c \"echo Deploying {Repository.FullName} [{HeadCommit.Timestamp}]: {HeadCommit.Message}\""
-  }
+  "Profiles": [
+    {
+      "SSH": {
+        "Enabled": true,
+        "Host": "localhost",
+        "Port": 22,
+        "Username": "root",
+        "Password": "qwerty",
+        "KeyFile": null,
+        "KeyPassword": null
+      },
+      "GitHub": {
+        "Repository": "githubtraining/hellogitworld",
+        "Branch": "master"
+      },
+      "Deploy": {
+        "Command": "bash",
+        "Arguments": "-c \"echo Deploying {Repository.FullName} [{HeadCommit.Timestamp}]: {HeadCommit.Message}\""
+      }
+    },
+    {
+      "SSH": {
+        "Enabled": false
+      },
+      "GitHub": {
+        "Repository": "githubtraining/example-dependency",
+        "Branch": "master"
+      },
+      "Deploy": {
+        "Command": "cmd",
+        "Arguments": "/C echo Deploying {Repository.FullName} [{HeadCommit.Timestamp}]: {HeadCommit.Message}"
+      }
+    }
+  ]
 }
